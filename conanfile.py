@@ -13,14 +13,12 @@ class GlibnetworkingConan(ConanFile):
     default_options = "shared=True"
     generators = "cmake"
     requires = ("glib/2.58.0@conanos/dev","gnutls/3.5.18@conanos/dev", 
-                "libffi/3.3-rc0@conanos/dev",
+                "libffi/3.3-rc0@conanos/dev",#required by gio
+                ####required by gnutls
                 "nettle/3.4@conanos/dev", 
                 "libtasn1/4.13@conanos/dev",
                 "gmp/6.1.2@conanos/dev"
                 )
-
-    #requires = ("libffi/3.99999@user/channel","glib/2.54.3@bincrafters/stable","gnutls/3.5.18@user/channel",
-    #"nettle/3.4@user/channel","libtasn1/4.13@user/channel")
 
     source_subfolder = "source_subfolder"
 
@@ -42,23 +40,6 @@ class GlibnetworkingConan(ConanFile):
 
 
     def build(self):
-        #vars = {'PKG_CONFIG_PATH': "%s/lib/pkgconfig:%s/lib/pkgconfig:%s/lib/pkgconfig"
-        #                           ":%s/lib/pkgconfig:%s/lib/pkgconfig"
-        #                           %(self.deps_cpp_info["libffi"].rootpath,self.deps_cpp_info["glib"].rootpath,
-        #                             self.deps_cpp_info["gnutls"].rootpath,self.deps_cpp_info["nettle"].rootpath,
-        #                             self.deps_cpp_info["libtasn1"].rootpath),
-        #        'LD_LIBRARY_PATH' : "%s/lib:%s/lib"%(self.deps_cpp_info["libffi"].rootpath,self.deps_cpp_info["glib"].rootpath),
-        #        }
-        #
-        #with tools.environment_append(vars):
-        #    self.run("autoreconf -f -i")
-        #    self.run('GIO_QUERYMODULES=%s/bin/gio-querymodules ./configure --prefix %s/build --libdir %s/build/lib'
-        #        ' --enable-introspection --without-ca-certificates --enable-more-warnings'
-        #        %(self.deps_cpp_info["glib"].rootpath, os.getcwd(), os.getcwd()))
-        #    self.run("make -j4")
-        #    self.run("make install")
-
-
         with tools.chdir(self.source_subfolder):
             with tools.environment_append({
                 'LD_LIBRARY_PATH' : "%s/lib"%(self.deps_cpp_info["libffi"].rootpath)
