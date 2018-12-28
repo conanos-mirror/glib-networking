@@ -42,7 +42,7 @@ class GlibnetworkingConan(ConanFile):
         self.requires.add("zlib/1.2.11@conanos/stable")
         self.requires.add("nettle/3.4.1@conanos/stable")
         self.requires.add("gmp/6.1.2-5@conanos/stable")
-        self.requires.add("gnutls/3.5.19-2@conanos/stable")
+        self.requires.add("gnutls/3.5.19@conanos/stable")
 
     def source(self):
         url_ = 'https://github.com/GNOME/glib-networking/archive/{version}.tar.gz'.format(version=self.version)
