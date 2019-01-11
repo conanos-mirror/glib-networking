@@ -1,6 +1,6 @@
 from conans import ConanFile, CMake, tools, Meson
 from conanos.build import config_scheme
-import os
+import os, shutil
 
 
 class GlibnetworkingConan(ConanFile):
@@ -10,7 +10,9 @@ class GlibnetworkingConan(ConanFile):
     url = "https://github.com/conanos/glib-networking"
     homepage = "https://github.com/GNOME/glib-networking"
     license = "LGPL-2+"
-    exports = ["COPYING"]
+    patch = "windows-export-symbol.patch"
+    win_def = "glib-networking.def"
+    exports = ["COPYING", patch, win_def]
     generators = "visual_studio", "gcc"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
@@ -47,8 +49,12 @@ class GlibnetworkingConan(ConanFile):
     def source(self):
         url_ = 'https://github.com/GNOME/glib-networking/archive/{version}.tar.gz'.format(version=self.version)
         tools.get(url_)
+        if self.settings.os == 'Windows':
+            tools.patch(patch_file=self.patch)
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
+        if self.settings.os == 'Windows':
+            shutil.copy2(os.path.join(self.source_folder,self.win_def), os.path.join(self.source_folder,self._source_subfolder,self.win_def))
 
         #maj_ver = '.'.join(self.version.split('.')[0:2])
         #tarball_name = '{name}-{version}.tar'.format(name=self.name, version=self.version)

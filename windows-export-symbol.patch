@@ -1,0 +1,38 @@
+diff -Nur glib-networking-2.59.1/meson.build glib-networking-2.59.1-windows/meson.build
+--- glib-networking-2.59.1/meson.build	2018-11-11 21:05:57.000000000 -0800
++++ glib-networking-2.59.1-windows/meson.build	2019-01-10 21:29:55.293856228 -0800
+@@ -40,6 +40,8 @@
+ if host_system.contains('linux')
+   test_ldflag = '-Wl,--version-script,' + symbol_map
+   module_ldflags += cc.get_supported_link_arguments(test_ldflag)
++else
++  module_ldflags = ['/DEF:' +join_paths(meson.current_source_dir(), meson.project_name() + '.def')]
+ endif
+ 
+ # *** Check GLib GIO        ***
+diff -Nur glib-networking-2.59.1/tls/gnutls/gnutls-module.c glib-networking-2.59.1-windows/tls/gnutls/gnutls-module.c
+--- glib-networking-2.59.1/tls/gnutls/gnutls-module.c	2018-11-11 21:05:57.000000000 -0800
++++ glib-networking-2.59.1-windows/tls/gnutls/gnutls-module.c	2019-01-10 23:06:47.335071927 -0800
+@@ -67,3 +67,21 @@
+   };
+   return g_strdupv (eps);
+ }
++
++void
++g_io_module_load (GIOModule *module)
++{
++  g_io_gnutls_load(module);
++}
++
++void
++g_io_module_unload (GIOModule *module)
++{
++  g_io_gnutls_unload(module);
++}
++
++char **
++g_io_module_query (void)
++{
++  return g_io_gnutls_query();
++}
+\ No newline at end of file
